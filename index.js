@@ -21,13 +21,19 @@ const run = async () => {
     const db = client.db('pc_parts');
     const productCollection = db.collection('products');
  
- 
- 
- 
+
+    app.get('/products/search/:category', async (req, res) => {
+      const propertyValue = req.params.category;
+      console.log(propertyValue);
+      const cursor = await productCollection.find({ Category: propertyValue});
+      const product = await cursor.toArray();
+      res.send({ status: true, data: product});
+      
+    });
+
+
     app.get('/products/:id', async (req, res) => {
-      const idValue = req.params.id;
-      console.log(...idValue);
-    
+      const idValue = req.params.id; 
       try {
         const product = await productCollection.findOne({ id:idValue });
         console.log(product);
@@ -43,6 +49,12 @@ const run = async () => {
     });
 
 
+ 
+
+ 
+ 
+
+
 
     app.get('/products', async (req, res) => {
       const cursor = productCollection.find({});
@@ -50,15 +62,6 @@ const run = async () => {
       res.send({ status: true, data: product});
     });
 
-
-    app.get('/products/:Category', async (req, res) => {
-      const propertyValue = req.params.Category;
-      
-      const cursor = await productCollection.find({ Category: propertyValue});
-      const product = await cursor.toArray();
-      res.send({ status: true, data: product});
-      
-    });
 
 
   } finally {
